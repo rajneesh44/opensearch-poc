@@ -1,0 +1,7 @@
+<div class="topnav">
+    <button type="button" (click)="check()">Platform check</button>
+    <input type="text" placeholder="Search.." [(ngModel)]="search" (input)="sendTheNewValue($event)">
+    <div *ngFor="let city of cities2">
+        <label for="city">{{city.name}}</label>
+    </div>
+</div>
