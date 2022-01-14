@@ -1,7 +1,18 @@
 <div class="topnav">
     <button type="button" (click)="check()">Platform check</button>
-    <input type="text" placeholder="Search.." [(ngModel)]="search" (input)="sendTheNewValue($event)">
-    <div *ngFor="let city of cities2">
-        <label for="city">{{city.name}}</label>
+    <br>
+    <br>
+    <div class="container">
+        <input type="text" placeholder="Search.." [(ngModel)]="search" (input)="sendTheNewValue($event)"><br>
+        <div class = 'fourth' *ngFor="let product of products2" (mouseover)="highlightRow(product)" (click)="addCard(product)"
+        [ngClass] = "{'highlight' : product.id == selectedId}">
+            <label for="product">{{product.product_name}}</label>
+            <div class="card" *ngIf="showCard && product.id == selectedId">
+                <br><br>
+                ID: {{product.id}}
+                <br>
+                Product: {{product.product_name}}
+            </div>
+        </div>
     </div>
 </div>

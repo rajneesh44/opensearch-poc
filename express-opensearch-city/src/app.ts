@@ -1,6 +1,6 @@
 import express = require('express');
 require('express-async-errors');
-import CityOsService from './services/city-os-service';
+import ProductOsService from './services/product-os-service';
 import {
   GenericExceptionHandler,
   NotFoundExceptionHandler,
@@ -22,8 +22,8 @@ app.listen(port, () => {
 
 app.use('/api/v1', require('./routes'));
 
-const cityOsService = new CityOsService();
-cityOsService.initIndex();
+const productOsService = new ProductOsService();
+productOsService.initIndex();
 
 app.use(NotFoundExceptionHandler);
 app.use(GenericExceptionHandler);

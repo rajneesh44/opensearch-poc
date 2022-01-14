@@ -2,11 +2,11 @@ import {IndicesExists} from '@opensearch-project/opensearch/api/requestParams';
 import {readFileSync} from 'fs';
 import { type } from 'os';
 import path = require('path');
-import City from '../types/city';
+import Product from '../types/product';
 import osClient from '../utils/config';
 
-export default class CityOsService {
-  private indexName = 'cities';
+export default class ProductOsService {
+  private indexName = 'products';
 
   async initIndex() {
     const params: IndicesExists = {
@@ -19,9 +19,9 @@ export default class CityOsService {
     const response = await osClient.indices.create({index: this.indexName});
     await this.seedData();
     if (response.statusCode === 200) {
-      console.log('Cities Index Created!');
+      console.log('products Index Created!');
     } else {
-      throw new Error('Error in creating cities index. ' + response.warnings);
+      throw new Error('Error in creating products index. ' + response.warnings);
     }
   }
 
@@ -29,23 +29,23 @@ export default class CityOsService {
     console.log('Seeding data into open search...');
 
     const rawdata: string = readFileSync(
-      path.resolve(__dirname, '../../resources/cities.json'),
+      path.resolve(__dirname, '../../resources/data3.json'),
       'utf-8'
     );
-    const cities: Array<City> = JSON.parse(rawdata);
+    const products: Array<Product> = JSON.parse(rawdata);
     const bulk: any = [];
 
-    // Loop through each city and create and push two objects into the array in each loop.
+    // Loop through each product and create and push two objects into the array in each loop.
     // First object sends the index and type you will be saving the data as.
     // Second object is the data you want to index.
-    cities.forEach(city => {
+    products.forEach(product => {
       bulk.push({
         index: {
           _index: this.indexName,
-          _id: city.id,
+          _id: product.id,
         },
       });
-      bulk.push(city);
+      bulk.push(product);
     });
 
     await osClient.bulk({
@@ -55,40 +55,31 @@ export default class CityOsService {
     });
   }
 
-  async searchCity(name: string, state: string) {
+  async searchProduct(sq: string) {
     const res = await osClient.search({
       index: this.indexName,
-      body: this.buildQuery(name, state),
+      body: this.buildQuery(sq),
     });
+
     if (res.statusCode === 200) {
       const response = res.body;
-      const cities: Array<any> = [];
+      const products: Array<any> = [];
       response.hits.hits.forEach((element: any) => {
-        cities.push(element._source);
+        products.push(element._source);
       });
-      return Promise.resolve(cities);
+      return Promise.resolve(products);
     } else {
       throw new Error(res.toString());
     }
   }
 
-  private buildQuery(name: string, state: string) {
+  private buildQuery(sq: string) {
     const must = [];
-    if (name.length !== 0) {
+    if (sq.length !== 0) {
       must.push({
         match_phrase_prefix: {
-          name: {
-            query: name,
-            slop: 3,
-          },
-        },
-      });
-    }
-    if (state.length !== 0) {
-      must.push({
-        match_phrase_prefix: {
-          state: {
-            query: state,
+          brand: {
+            query: sq,
             slop: 3,
           },
         },
@@ -106,11 +97,3 @@ export default class CityOsService {
 }
 
 
-
-// product_type search
-//   response:
-//     name
-//     desc 
-//     price
-//     ceategory
-//     business

@@ -1,0 +1,20 @@
+.fourth {
+    float: center;
+    width: 40%;
+    height: 20%;
+    background-color: #DDDDDD;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 3px;
+    border-color: black;
+}
+
+
+.highlight {
+    background-color: #4CAF50 !important;
+    color: #ffffff;
+}
+
+.hover{
+
+}
